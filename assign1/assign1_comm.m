@@ -1,6 +1,6 @@
 clear all;
 close all;
-
+clc;
 % Test 1
 x = -6:0.01:6;
 n_bits = 3;
