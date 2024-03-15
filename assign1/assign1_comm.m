@@ -85,7 +85,9 @@ end
 quant_error_squared_mean = mean(quant_error.^2, 2); 
 SNR_pract = input_squared_mean ./ quant_error_squared_mean;
 SNR_pract=10 * log10(SNR_pract);
-SNR_theor=10 * log10(0.12)+6*n_bits_range;
+% Var(XY)=E(X2^Y^2)−(E(XY))^2=Var(X)Var(Y)+Var(X)(E(Y))^2+Var(Y)(E(X))^2 as
+% they are independent
+SNR_theor=10 * log10(0.24)+6*n_bits_range;
 
 fig3=figure;
 plot(n_bits_range, SNR_pract, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation');
