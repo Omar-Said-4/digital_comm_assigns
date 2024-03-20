@@ -48,17 +48,26 @@ end
 input_squared_mean = mean(uniform_variables.^2);
 quant_error_squared_mean = mean(quant_error.^2, 2); % Calculate mean along rows
 SNR_pract = input_squared_mean ./ quant_error_squared_mean;
-SNR_pract=10 * log10(SNR_pract);
-SNR_theor=6*n_bits_range;
+SNR_pract_db=10 * log10(SNR_pract);
+SNR_theor_db=6*n_bits_range;
+SNR_theor=2.^(2*n_bits_range);
 fig2=figure;
+subplot(2,1,1);
+plot(n_bits_range, SNR_pract_db, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation');
+hold on;
+plot(n_bits_range, SNR_theor_db, 's-', 'LineWidth', 2, 'DisplayName', 'Theory');
+hold off;
+xlabel('n_{bits}');
+ylabel('SNR (dB)');
+subplot(2,1,2);
 plot(n_bits_range, SNR_pract, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation');
 hold on;
 plot(n_bits_range, SNR_theor, 's-', 'LineWidth', 2, 'DisplayName', 'Theory');
 hold off;
+xlabel('n_{bits}');
+ylabel('SNR');
 sgtitle('Simulation/theoretical SNR');
 set(fig2, 'Name', 'Simulation/theoretical SNR');
-xlabel('n_{bits}');
-ylabel('SNR (dB)');
 legend('Practical', 'Theoritical');
 grid on;
 
@@ -84,20 +93,29 @@ for idx = 1:length(n_bits_range)
 end
 quant_error_squared_mean = mean(quant_error.^2, 2); 
 SNR_pract = input_squared_mean ./ quant_error_squared_mean;
-SNR_pract=10 * log10(SNR_pract);
+SNR_pract_db=10 * log10(SNR_pract);
 % Var(XY)=E(X2^Y^2)−(E(XY))^2=Var(X)Var(Y)+Var(X)(E(Y))^2+Var(Y)(E(X))^2 as
 % they are independent
-SNR_theor=10 * log10(0.24)+6*n_bits_range;
+SNR_theor=2.^(2*n_bits_range)*0.24;
+SNR_theor_db=10 * log10(0.24)+6*n_bits_range;
 
 fig3=figure;
+subplot(2,1,1);
+plot(n_bits_range, SNR_pract_db, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation');
+hold on;
+plot(n_bits_range, SNR_theor_db, 's-', 'LineWidth', 2, 'DisplayName', 'Theory');
+hold off;
+xlabel('n_{bits}');
+ylabel('SNR (dB)');
+subplot(2,1,2);
 plot(n_bits_range, SNR_pract, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation');
 hold on;
 plot(n_bits_range, SNR_theor, 's-', 'LineWidth', 2, 'DisplayName', 'Theory');
 hold off;
+xlabel('n_{bits}');
+ylabel('SNR');
 sgtitle('Simulation/theoretical SNR of non uniform distribution');
 set(fig3, 'Name', 'Simulation/theoretical SNR of non uniform distribution');
-xlabel('n_{bits}');
-ylabel('SNR (dB)');
 legend('Practical (exp)', 'Theoritical (exp)');
 grid on;
 
@@ -121,18 +139,27 @@ for idx = 1:length(mius)
    end
    quant_error_squared_mean = mean(quant_error.^2, 2); 
    SNR_pract = input_squared_mean ./ quant_error_squared_mean;
-   SNR_pract=10 * log10(SNR_pract);
-   SNR_theor=10 * log10(3)+6*n_bits_range-10*log10((log(1+miu))^2);
+   SNR_pract_db=10 * log10(SNR_pract);
+   SNR_theor=2.^(2*n_bits_range)*3/((log(1+miu))^2);
+   SNR_theor_db=10 * log10(3)+6*n_bits_range-10*log10((log(1+miu))^2);
+   subplot(2,1,1);
+   plot(n_bits_range, SNR_pract_db, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation'); 
+   hold on;
+   plot(n_bits_range, SNR_theor_db, 's-', 'LineWidth', 2, 'DisplayName', 'Theory');
+   hold on;
+   xlabel('n_{bits}');
+   ylabel('SNR (dB)');
+   subplot(2,1,2);
    plot(n_bits_range, SNR_pract, 'o-', 'LineWidth', 2, 'DisplayName', 'Simulation'); 
    hold on;
    plot(n_bits_range, SNR_theor, 's-', 'LineWidth', 2, 'DisplayName', 'Theory');
    hold on;
+   xlabel('n_{bits}');
+   ylabel('SNR');
 end
 legend('Practical u =5', 'Theoritical u =5','Practical u =100', 'Theoritical u =100','Practical u =200', 'Theoritical u =200');
 sgtitle('Simulation/theoretical SNR of non uniform distribution with expansion');
 set(fig4, 'Name', 'Simulation/theoretical SNR of non uniform distribution');
-xlabel('n_{bits}');
-ylabel('SNR (dB)');
 function q_ind = UniformQuantizer(in_val, n_bits, xmax, m)
      L = 2^n_bits; % Number of quantization intervals
      delta = 2 * xmax / L; % Width of each quantization interval
