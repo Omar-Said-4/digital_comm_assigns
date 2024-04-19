@@ -130,10 +130,14 @@ for idx = 1:length(mius)
    quant_error = zeros(7, num_samples);
    for idx2 = 1:length(n_bits_range)
         n_bits=n_bits_range(idx2);
-        compressed_vals = Compressor(samples, miu);
+        max_value = max(samples);
+        normalized_samples = samples / max_value;
+        compressed_vals = Compressor(normalized_samples, miu);
+        compressed_vals=compressed_vals*max_value;
         q_ind = UniformQuantizer(compressed_vals, n_bits, 5, 0);
         q_deq = UniformDequantizer(q_ind, n_bits, 5, 0);
-        expanded_vals = Expander(q_deq, miu);
+        q_deq=q_deq/max_value;
+        expanded_vals = Expander(q_deq, miu)*max_value;
         quant_error(n_bits-1, :) = samples - expanded_vals;
 
    end
@@ -183,7 +187,6 @@ function deq_val=UniformDequantizer(q_ind,n_bits,xmax,m)
      deq_val=q_levels_output(q_ind+1);
 end
 function compressed_vals = Compressor(in,miu)
-
 compressed_vals=sign(in).*(log(1+abs(in)*miu)/log(1+miu));
 end
 
